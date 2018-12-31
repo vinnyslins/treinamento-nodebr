@@ -1,20 +1,28 @@
-function obterUsuario(callback) {
-  setTimeout(() => {
-    return callback(null, {
-      id: 1,
-      nome: 'Aladin',
-      dataNascimento: new Date()
-    });
-  }, 1000);
+const util = require('util');
+
+const obterEnderecoAsync = util.promisify(obterEndereco);
+
+function obterUsuario() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      return resolve({
+        id: 1,
+        nome: 'Aladin',
+        dataNascimento: new Date()
+      });
+    }, 1000);
+  });
 }
 
-function obterTelefone(idUsuario, callback) {
-  setTimeout(() => {
-    return callback(null, {
-      telefone: '11999999',
-      ddd: 11
-    });
-  }, 2000);
+function obterTelefone(idUsuario) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      return resolve({
+        telefone: '11999999',
+        ddd: 11
+      });
+    }, 2000);
+  });
 }
 
 function obterEndereco(idUsuario, callback) {
@@ -26,27 +34,57 @@ function obterEndereco(idUsuario, callback) {
   }, 2000);
 }
 
-obterUsuario((erro, usuario) => {
-  if (erro) {
-    console.error('deu ruim no usuário', erro);
-    return;
-  }
-  obterTelefone(usuario.id, (erro1, telefone) => {
-    if (erro1) {
-      console.error('deu ruim no telefone', erro1);
-      return;
+const usuarioPromise = obterUsuario();
+usuarioPromise.then(usuario => {
+  return obterTelefone(usuario.id).then(resultado => {
+    return {
+      usuario: {
+        nome: usuario.nome,
+        id: usuario.id
+      },
+      telefone: resultado
     }
-    obterEndereco(usuario.id, (erro2, endereco) => {
-      if (erro2) {
-        console.error('deu ruim no endereço', erro2);
-        return;
-      }
-
-      console.log(`
-        Nome: ${usuario.nome},
-        Endereço: ${endereco.rua}, ${endereco.numero}
-        Telefone: (${telefone.ddd}) ${telefone.telefone}
-      `);
-    });
   });
+}).then(resultado => {
+  const endereco = obterEnderecoAsync(resultado.usuario.id);
+  return endereco.then((result) => {
+    return {
+      usuario: resultado.usuario,
+      telefone: resultado.telefone,
+      endereco: result
+    }
+  });
+}).then(resultado => {
+  console.log(`
+    Nome: ${resultado.usuario.nome}
+    Endereço: ${resultado.endereco.rua}, ${resultado.endereco.numero}
+    Telefone: (${resultado.telefone.ddd}) ${resultado.telefone.telefone}
+  `);
+}).catch(erro => {
+  console.error('deu ruim', erro);
 });
+
+// obterUsuario((erro, usuario) => {
+//   if (erro) {
+//     console.error('deu ruim no usuário', erro);
+//     return;
+//   }
+//   obterTelefone(usuario.id, (erro1, telefone) => {
+//     if (erro1) {
+//       console.error('deu ruim no telefone', erro1);
+//       return;
+//     }
+//     obterEndereco(usuario.id, (erro2, endereco) => {
+//       if (erro2) {
+//         console.error('deu ruim no endereço', erro2);
+//         return;
+//       }
+
+//       console.log(`
+//         Nome: ${usuario.nome},
+//         Endereço: ${endereco.rua}, ${endereco.numero}
+//         Telefone: (${telefone.ddd}) ${telefone.telefone}
+//       `);
+//     });
+//   });
+// });
