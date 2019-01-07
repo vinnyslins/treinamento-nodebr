@@ -4,7 +4,7 @@
   "description": "sudo docker run \\   --name postgres \\   -p 5432:5432 \\   -e POSTGRES_USER=vinnyslins \\   -e POSTGRES_PASSWORD=my-secret-pw \\   -e POSTGRES_DB=heroes \\   -d \\   postgres",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/tests/*.js"
   },
   "keywords": [],
   "author": "",
