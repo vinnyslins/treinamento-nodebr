@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mongoose": "^5.4.2",
     "pg": "^7.7.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.42.0"
