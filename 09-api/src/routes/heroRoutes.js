@@ -76,6 +76,7 @@ class HeroRoutes extends BaseRoute {
       method: 'PATCH',
       config: {
         validate: {
+          failAction,
           params: {
             id: Joi.string().required()
           },
@@ -99,6 +100,38 @@ class HeroRoutes extends BaseRoute {
 
           return {
             message: 'Herói atualizado com sucesso!'
+          };
+        } catch(error) {
+          console.log(error);
+          return 'Internal server error';
+        }
+      }
+    }
+  }
+
+  delete() {
+    return {
+      path: '/herois/{id}',
+      method: 'DELETE',
+      config: {
+        validate: {
+          failAction,
+          params: {
+            id: Joi.string().required()
+          }
+        }
+      },
+      handler: async request => {
+        try {
+          const { id } = request.params;
+          const result = await this.db.delete(id);
+
+          if (result.n < 1) return {
+            message: 'Não foi possível remover.'
+          };
+
+          return {
+            message: 'Herói removido com sucesso!'
           };
         } catch(error) {
           console.log(error);
