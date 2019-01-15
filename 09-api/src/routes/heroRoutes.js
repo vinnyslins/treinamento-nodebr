@@ -1,5 +1,6 @@
 const BaseRoute = require('./base/baseRoute');
 const Joi = require('joi');
+const Boom = require('boom');
 
 const failAction = (request, headers, error) => {
   throw error;
@@ -35,7 +36,7 @@ class HeroRoutes extends BaseRoute {
           return this.db.read(query, skip, limit);
         } catch(error) {
           console.log(error);
-          return 'Erro interno no servidor.';
+          return Boom.internal();
         }
       }
     }
@@ -64,7 +65,7 @@ class HeroRoutes extends BaseRoute {
           };
         } catch(error) {
           console.log(error);
-          return 'Internal server error';
+          return Boom.internal();
         }
       }
     }
@@ -94,16 +95,15 @@ class HeroRoutes extends BaseRoute {
           const dados = JSON.parse(JSON.stringify(payload));
 
           const result = await this.db.update(id, dados);
-          if (result.nModified < 1) return {
-            message: 'Não foi possível atualizar!'
-          };
+          if (result.nModified < 1)
+            return Boom.preconditionFailed('Id não encontrado.');
 
           return {
             message: 'Herói atualizado com sucesso!'
           };
         } catch(error) {
           console.log(error);
-          return 'Internal server error';
+          return Boom.internal();
         }
       }
     }
@@ -126,16 +126,15 @@ class HeroRoutes extends BaseRoute {
           const { id } = request.params;
           const result = await this.db.delete(id);
 
-          if (result.n < 1) return {
-            message: 'Não foi possível remover.'
-          };
+          if (result.n < 1)
+            return Boom.preconditionFailed('Não foi possível remover.');
 
           return {
             message: 'Herói removido com sucesso!'
           };
         } catch(error) {
           console.log(error);
-          return 'Internal server error';
+          return Boom.internal();
         }
       }
     }

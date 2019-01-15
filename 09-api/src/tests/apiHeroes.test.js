@@ -102,8 +102,8 @@ describe('Suíte de testes da API Heroes', function() {
     });
     const dados = JSON.parse(result.payload);
 
-    assert.equal(result.statusCode, 200);
-    assert.deepEqual(dados.message, 'Não foi possível atualizar!');
+    assert.equal(result.statusCode, 412);
+    assert.deepEqual(dados.message, 'Id não encontrado.');
   });
   it('Remover /herois/:id', async () => {
     const result = await app.inject({
@@ -114,5 +114,27 @@ describe('Suíte de testes da API Heroes', function() {
 
     assert.equal(result.statusCode, 200);
     assert.deepEqual(dados.message, 'Herói removido com sucesso!');
+  });
+  it('Remover /herois/:id - deve retornar um erro com _id incorreto', async () => {
+    const _id = '5c3d60551f8e0460db6ba1e8';
+    const result = await app.inject({
+      method: 'DELETE',
+      url: `/herois/${_id}`
+    });
+    const dados = JSON.parse(result.payload);
+
+    assert.equal(result.statusCode, 412);
+    assert.deepEqual(dados.message, 'Não foi possível remover.');
+  });
+  it('Remover /herois/:id - deve retornar um erro com _id inválido', async () => {
+    const _id = 'ID_INVALIDO';
+    const result = await app.inject({
+      method: 'DELETE',
+      url: `/herois/${_id}`
+    });
+    const dados = JSON.parse(result.payload);
+
+    assert.equal(result.statusCode, 500);
+    assert.deepEqual(dados.message, 'An internal server error occurred');
   });
 });
