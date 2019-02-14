@@ -23,6 +23,7 @@ class AuthRoutes extends BaseRoute {
       path: '/login',
       method: 'POST',
       config: {
+        auth: false,
         tags: ['api'],
         description: 'Obter token',
         notes: 'Fazer login com usuário e senha',

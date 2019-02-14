@@ -9,6 +9,8 @@ const HapiSwagger = require('hapi-swagger');
 const Vision = require('vision');
 const Inert = require('inert');
 
+const HapiJwt = require('hapi-auth-jwt2');
+
 const JWT_SECRET = 'TASMANIAN_DEVIL@333';
 
 const app = new Hapi.Server({
@@ -23,7 +25,7 @@ async function main() {
   const connection = MongoDB.connect();
   const context = new Context(new MongoDB(connection, HeroiSchema));
 
-  await app.register([Vision, Inert, {
+  await app.register([HapiJwt, Inert, Vision, {
     plugin: HapiSwagger,
     options: {
       info: {
@@ -33,6 +35,15 @@ async function main() {
       lang: 'pt'
     }
   }]);
+
+  app.auth.strategy('jwt', 'jwt', {
+    key: JWT_SECRET,
+    validate: (payload, request) => {
+      // Verifica se o usuário existe e se está ativo
+      return { isValid: true };
+    }
+  });
+  app.auth.default('jwt');
 
   app.route([
     ...mapRoutes(new HeroRoutes(context), HeroRoutes.methods()),
