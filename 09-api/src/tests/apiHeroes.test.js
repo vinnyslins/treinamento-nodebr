@@ -57,7 +57,7 @@ describe('Suíte de testes da API Heroes', function() {
     assert.equal(result.statusCode, 400);
   });
   it('Listar /herois - deve filtrar pelo nome', async () => {
-    const NAME = 'Batman';
+    const NAME = MOCK_HEROI_ATUALIZAR.nome;
     const result = await app.inject({
       method: 'GET',
       url: `/herois?skip=0&limit=10&nome=${NAME}`
