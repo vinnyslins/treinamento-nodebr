@@ -33,8 +33,9 @@ class Postgres extends ICrud {
     return this._schema.destroy({ where: query });
   }
 
-  async update(id, item) {
-    const result = await this._schema.update(item, { where: { id: id }});
+  async update(id, item, upsert = false) {
+    const fn = upsert ? 'upsert' : 'update';
+    const result = await this._schema[fn](item, { where: { id: id }});
     return result;
   }
 
