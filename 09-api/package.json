@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/tests/*.js",
+    "postinstall": "cross-env NODE_ENV=prod npm t",
+    "test": "nyc --reporter=html mocha --exit src/tests/*.js",
     "prod": "cross-env NODE_ENV=prod pm2-runtime src/api.js"
   },
   "keywords": [],
@@ -29,6 +30,7 @@
     "vision": "^5.4.4"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^13.3.0"
   }
 }
