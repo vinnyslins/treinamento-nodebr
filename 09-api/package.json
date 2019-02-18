@@ -1,13 +1,14 @@
 {
-  "name": "07-multi-db",
+  "name": "09-api",
   "version": "1.0.0",
-  "description": "sudo docker run \\   --name postgres \\   -p 5432:5432 \\   -e POSTGRES_USER=vinnyslins \\   -e POSTGRES_PASSWORD=my-secret-pw \\   -e POSTGRES_DB=heroes \\   -d \\   postgres",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/tests/*.js"
+    "test": "mocha src/tests/*.js",
+    "prod": "cross-env NODE_ENV=prod node src/api.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "vinnyslins",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.4",
